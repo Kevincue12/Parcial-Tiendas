@@ -21,3 +21,6 @@ __pycache__/
 Thumbs.db
 
 *.pid
+
+*.xlsx
+*.xls

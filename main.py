@@ -1,6 +1,8 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import SessionLocal, engine
+from fastapi.responses import FileResponse
+from exportar import exportar_datos_a_excel
 import models, crud_categorias, crud_productos, schemas
 
 models.Base.metadata.create_all(bind=engine)
@@ -131,3 +133,8 @@ def restar_stock(producto_id: int, cantidad: int, db: Session = Depends(get_db))
 @app.get("/productos/", response_model=list[schemas.ProductoResponse])
 def listar_productos(db: Session = Depends(get_db)):
     return crud_productos.listar_productos(db)
+
+@app.get("/exportar-excel/")
+def exportar_excel(db: Session = Depends(get_db)):
+    archivo = exportar_datos_a_excel(db)
+    return FileResponse(archivo, filename="datos_tienda.xlsx", media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
