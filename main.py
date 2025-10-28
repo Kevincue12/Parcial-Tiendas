@@ -63,10 +63,15 @@ def obtener_producto(producto_id: int, db: Session = Depends(get_db)):
 
 @app.put("/productos/{producto_id}", response_model=schemas.ProductoResponse)
 def actualizar_producto(producto_id: int, datos: schemas.ProductoUpdate, db: Session = Depends(get_db)):
-    producto = crud_productos.actualizar_producto(db, producto_id, datos)
-    if not producto:
-        raise HTTPException(status_code=404, detail="Producto no encontrado")
-    return producto
+    try:
+        producto = crud_productos.actualizar_producto(db, producto_id, datos)
+        if not producto:
+            raise HTTPException(status_code=404, detail="Producto no encontrado")
+        return producto
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
 
 @app.put("/productos/{producto_id}/desactivar", response_model=schemas.ProductoResponse)
 def desactivar_producto(producto_id: int, db: Session = Depends(get_db)):
