@@ -75,3 +75,9 @@ def restar_stock(db: Session, producto_id: int, cantidad: int):
     db.commit()
     db.refresh(producto)
     return producto
+
+def buscar_productos_por_nombre(db: Session, nombre: str):
+    return db.query(Producto).filter(
+        Producto.activa == True,
+        Producto.nombre.ilike(f"%{nombre}%")
+    ).all()

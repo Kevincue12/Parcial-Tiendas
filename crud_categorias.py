@@ -33,3 +33,9 @@ def desactivar_categoria(db: Session, categoria_id: int):
     db.commit()
     db.refresh(categoria)
     return categoria
+
+
+def buscar_categorias_por_nombre(db: Session, nombre: str):
+    return db.query(Categoria).filter(
+        Categoria.nombre.ilike(f"%{nombre}%")
+    ).all()

@@ -28,7 +28,12 @@ def crear_categoria(categoria: schemas.CategoriaCreate, db: Session = Depends(ge
 
 
 @app.get("/categorias/", response_model=list[schemas.CategoriaResponse])
-def listar_categorias(db: Session = Depends(get_db)):
+def buscar_categorias_con_nombre (nombre: str | None = None, db: Session = Depends(get_db)):
+    if nombre:
+        categorias = crud_categorias.buscar_categorias_por_nombre(db, nombre)
+        if not categorias:
+            raise HTTPException(status_code=404, detail="No se encontraron categorías con ese nombre.")
+        return categorias
     return crud_categorias.listar_categorias(db)
 
 
@@ -70,9 +75,19 @@ def crear_producto(producto: schemas.ProductoCreate, db: Session = Depends(get_d
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@app.get("/categorias/", response_model=list[schemas.CategoriaResponse])
+def listar_categorias(db: Session = Depends(get_db)):
+    return crud_categorias.listar_categorias(db)
+
+
 
 @app.get("/productos/", response_model=list[schemas.ProductoResponse])
-def listar_productos(db: Session = Depends(get_db)):
+def buscar_productos_con_nombre (nombre: str | None = None, db: Session = Depends(get_db)):
+    if nombre:
+        productos = crud_productos.buscar_productos_por_nombre(db, nombre)
+        if not productos:
+            raise HTTPException(status_code=404, detail="No se encontraron productos con ese nombre.")
+        return productos
     return crud_productos.listar_productos(db)
 
 
@@ -112,3 +127,7 @@ def restar_stock(producto_id: int, cantidad: int, db: Session = Depends(get_db))
         return producto
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+@app.get("/productos/", response_model=list[schemas.ProductoResponse])
+def listar_productos(db: Session = Depends(get_db)):
+    return crud_productos.listar_productos(db)
