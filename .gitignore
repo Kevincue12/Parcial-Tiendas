@@ -2,15 +2,13 @@
 *.sqlite3
 
 .env
+.venv/
+venv/
 
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-venv/
-.env/
-.venv/
 
 *.log
 *.bak
@@ -19,7 +17,7 @@ venv/
 .vscode/
 .idea/
 
-*.pid
-
 .DS_Store
 Thumbs.db
+
+*.pid
